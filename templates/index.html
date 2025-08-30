@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Caixas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
+    <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/logonav3.ico') }}">
+  </head>
+  <body class="light-mode">
+
+  <section class="animated-background">
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+    <span></span> <span></span> <span></span> <span></span> <span></span>
+  </section>
+  
+  <input type="checkbox" id="toggle" hidden>
+  <label class="toggle" for="toggle">
+      <i class="bx bxs-sun"></i>
+      <i class="bx bx-moon"></i>
+      <span class="ball"></span>
+  </label> 
+
+  <div class="form-container">
+
+    <div class="form-header">
+      <h2>Registro de Caixas</h2>
+      <p>Preencha corretamente os campos.</p>
+    </div>
+
+    <form id="formEvento" class="form-body">
+
+      <div class="form-input">
+        <label for="nome_caixa">Nome da Caixa</label>
+        <input type="text" id="nome_caixa" placeholder="Digite o nome da caixa" required>
+      </div>
+
+      <div class="form-input">
+        <label for="data_p0">Data e Hora do P0 (Nascimento)</label>
+        <input type="datetime-local" id="data_p0" required>
+      </div>
+
+      <div class="form-input">
+        <label for="cor_p0">Cor do Evento P0</label>
+        <select id="cor_p0" required>
+          <option value="1" data-color="#E6E6FA">Lavanda</option>
+          <option value="2" data-color="#90EE90">Verde</option>
+          <option value="3" data-color="#800080">Roxo</option>
+          <option value="4" data-color="#FF69B4">Flamingo</option>
+          <option value="5" data-color="#FFFF00">Amarelo</option>
+          <option value="6" data-color="#FFA500">Laranja</option>
+          <option value="7" data-color="#007BFF">Azul</option>
+          <option value="8" data-color="#2F4F4F">Grafite</option>
+          <option value="9" data-color="#4B0082">Mirtilo</option>
+          <option value="10" data-color="#006400">Verde Escuro</option>
+          <option value="11" data-color="#FF6347">Tomate</option>
+        </select>
+      </div>
+
+      <div class="form-input">
+        <label for="cor_outras">Cor dos demais Eventos</label>
+        <select id="cor_outras" required>
+          <option value="1" data-color="#E6E6FA">Lavanda</option>
+          <option value="2" data-color="#90EE90">Verde</option>
+          <option value="3" data-color="#800080">Roxo</option>
+          <option value="4" data-color="#FF69B4">Flamingo</option>
+          <option value="5" data-color="#FFFF00">Amarelo</option>
+          <option value="6" data-color="#FFA500">Laranja</option>
+          <option value="7" data-color="#007BFF">Azul</option>
+          <option value="8" data-color="#2F4F4F">Grafite</option>
+          <option value="9" data-color="#4B0082">Mirtilo</option>
+          <option value="10" data-color="#006400">Verde Escuro</option>
+          <option value="11" data-color="#FF6347">Tomate</option>
+        </select>
+      </div>
+
+      <label>Alterar cores específicas de dias</label>
+      <div id="coresEspecificasContainer"></div>
+      <button type="button" id="addCampoCor" class="btn-add">
+        <i class='bxr  bx-plus-square'></i> Adicionar Dia
+      </button>
+
+      <button type="submit" class="btn-submit">
+        <i class='bxr  bx-calendar-up-arrow'></i> Criar Eventos
+      </button>
+      <div id="resultado" class="form-message"></div>
+
+      <button type="button" id="btnExcluirEventos" class="btn-delete">
+        <i class='bxr bx-trash'></i> Excluir Eventos
+      </button>
+
+    </form>
+
+    
+    <!--<button id="toggleTheme" class="btn-theme">🌙 Tema</button>-->
+
+
+
+  </div>
+  
+  <div id="loading">
+    <span class="spinner"></span>
+    <span>Adicionando eventos...</span>
+  </div>
+
+  <div class="footer-text">© Copyright - Bruna Barreto</div>
+  <div class="footer-image">
+    <img src="{{ url_for('static', filename='assets/logoicon.ico') }}" alt="Logo">
+  </div>
+
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
