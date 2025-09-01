@@ -37,8 +37,9 @@ def criar_evento():
 
 @app.route("/login")
 def login():
-    flow = Flow.from_client_secrets_file(
-        os.path.join("json", "credentials.json"),
+    credentials_data = json.loads(os.environ.get("CREDENTIALS"))  
+    flow = Flow.from_client_config(
+        credentials_data,
         scopes=SCOPES,
         redirect_uri=url_for("callback", _external=True)
     )
@@ -49,8 +50,9 @@ def login():
 
 @app.route("/callback")
 def callback():
-    flow = Flow.from_client_secrets_file(
-        os.path.join("json", "credentials.json"),
+    credentials_data = json.loads(os.environ.get("CREDENTIALS"))  
+    flow = Flow.from_client_config(
+        credentials_data,
         scopes=SCOPES,
         redirect_uri=url_for("callback", _external=True)
     )
@@ -142,7 +144,7 @@ def add_event():
             15: ["Pesagem", "Trocas", "Coleta", "Swab"],
             18: ["Pesagem"],
             21: ["Pesagem", "Trocas"],
-            25: ["Pesagem"],
+            25: ["Pesagem", "Desmame"],
             28: ["Pesagem"],
             30: ["Pesagem", "Coleta"],
             35: ["Pesagem"],
@@ -155,7 +157,8 @@ def add_event():
         cores_procedimentos = {
             "Infecção": "6",       
             "Pesagem mãe": "6",    
-            "Pesagem": "3",        
+            "Pesagem": "3",
+            "Desmame": "1",        
             "Coleta": "11",        
             "Trocas": "4",        
             "Swab": "4"            
@@ -172,7 +175,7 @@ def add_event():
 
         for dia, procedimentos in infos_por_dia.items():
             data_evento = data_p0 + datetime.timedelta(days=dia)
-            procs_restantes = set(procedimentos)  
+            procs_restantes = set(procedimentos)
 
             if "Infecção" in procs_restantes and "Pesagem mãe" in procs_restantes:
                 summary = f"{nome_caixa} P{dia} Infecção + Pesagem mãe"
@@ -185,7 +188,6 @@ def add_event():
                 }
                 e = service.events().insert(calendarId=CALENDAR_ID, body=event).execute()
                 eventos_criados[f"P{dia}_Infecção+PesagemMãe"] = e.get("htmlLink")
-
                 procs_restantes -= {"Infecção", "Pesagem mãe"}
 
             if "Trocas" in procs_restantes and "Swab" in procs_restantes:
@@ -199,21 +201,23 @@ def add_event():
                 }
                 e = service.events().insert(calendarId=CALENDAR_ID, body=event).execute()
                 eventos_criados[f"P{dia}_Trocas+Swab"] = e.get("htmlLink")
-
                 procs_restantes -= {"Trocas", "Swab"}
 
             for proc in procs_restantes:
-                cor = cores_procedimentos.get(proc, cor_outras)
+                cor = None if proc == "Coleta" else cores_procedimentos.get(proc, cor_outras)
+
                 summary = f"{nome_caixa} P{dia} {proc}"
                 event = {
                     "summary": summary,
                     "start": {"dateTime": data_evento.isoformat(), "timeZone": "America/Sao_Paulo"},
-                    "end": {"dateTime": (data_evento + datetime.timedelta(hours=1)).isoformat(), "timeZone": "America/Sao_Paulo"},
-                    "colorId": cor
+                    "end": {"dateTime": (data_evento + datetime.timedelta(hours=1)).isoformat(), "timeZone": "America/Sao_Paulo"}
                 }
+
+                if cor:
+                    event["colorId"] = cor
+
                 e = service.events().insert(calendarId=CALENDAR_ID, body=event).execute()
                 eventos_criados[f"P{dia}_{proc}"] = e.get("htmlLink")
-
 
         return jsonify({
             "status": "success",
@@ -222,6 +226,7 @@ def add_event():
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)})
+
 
 
 
