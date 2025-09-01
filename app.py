@@ -6,8 +6,11 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import Flow
+from dotenv import load_dotenv
 
 app = Flask(__name__)
+
+load_dotenv()
 
 app.secret_key = os.environ.get("SECRET_KEY")
 CALENDAR_ID = os.environ.get("CALENDAR_ID")
