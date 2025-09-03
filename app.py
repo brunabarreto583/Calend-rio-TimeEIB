@@ -134,6 +134,7 @@ def add_event():
         data_p0 = datetime.datetime.strptime(data.get("data_p0"), "%Y-%m-%dT%H:%M")
         cor_p0 = data.get("cor_p0", "2")
         cor_outras = data.get("cor_outras", "4")
+        
 
         service = get_service()
         if isinstance(service, dict) and service.get("login_required"):
@@ -142,12 +143,12 @@ def add_event():
         infos_por_dia = {
             3: ["Infecção", "Pesagem mãe"],
             6: ["Pesagem", "Coleta"],
-            7: ["Trocas"],
+            7: ["Troca"],
             10: ["Pesagem"],
-            15: ["Pesagem", "Trocas", "Coleta", "Swab"],
+            15: ["Pesagem", "Troca", "Coleta", "Swab da Mãe"],
             18: ["Pesagem"],
-            21: ["Pesagem", "Trocas"],
-            25: ["Pesagem", "Desmame"],
+            21: ["Pesagem", "Troca"],
+            25: ["Pesagem", "Desmame + Pesagem Mãe"],
             28: ["Pesagem"],
             30: ["Pesagem", "Coleta"],
             35: ["Pesagem"],
@@ -161,16 +162,16 @@ def add_event():
             "Infecção": "6",       
             "Pesagem mãe": "6",    
             "Pesagem": "3",
-            "Desmame": "1",        
+            "Desmame + Pesagem Mãe": "1",        
             "Coleta": "11",        
-            "Trocas": "4",        
-            "Swab": "4"            
+            "Troca": "4",        
+            "Swab da Mãe": "4"            
         }
 
         event_p0 = {
             "summary": f"{nome_caixa} P0",
-            "start": {"dateTime": data_p0.isoformat(), "timeZone": "America/Sao_Paulo"},
-            "end": {"dateTime": (data_p0 + datetime.timedelta(hours=1)).isoformat(), "timeZone": "America/Sao_Paulo"},
+            "start": {"date": data_p0.date().isoformat()},
+            "end": {"date": (data_p0 + datetime.timedelta(days=1)).date().isoformat()},
             "colorId": str(cor_p0)
         }
         e_p0 = service.events().insert(calendarId=CALENDAR_ID, body=event_p0).execute()
@@ -185,26 +186,26 @@ def add_event():
                 cor = "6"
                 event = {
                     "summary": summary,
-                    "start": {"dateTime": data_evento.isoformat(), "timeZone": "America/Sao_Paulo"},
-                    "end": {"dateTime": (data_evento + datetime.timedelta(hours=1)).isoformat(), "timeZone": "America/Sao_Paulo"},
+                    "start": {"date": data_evento.date().isoformat()},
+                    "end": {"date": (data_evento + datetime.timedelta(days=1)).date().isoformat()},
                     "colorId": cor
                 }
                 e = service.events().insert(calendarId=CALENDAR_ID, body=event).execute()
                 eventos_criados[f"P{dia}_Infecção+PesagemMãe"] = e.get("htmlLink")
                 procs_restantes -= {"Infecção", "Pesagem mãe"}
 
-            if "Trocas" in procs_restantes and "Swab" in procs_restantes:
-                summary = f"{nome_caixa} P{dia} Trocas + Swab"
+            if "Troca" in procs_restantes and "Swab da Mãe" in procs_restantes:
+                summary = f"{nome_caixa} P{dia} Troca + Swab da Mãe"
                 cor = "4"
                 event = {
                     "summary": summary,
-                    "start": {"dateTime": data_evento.isoformat(), "timeZone": "America/Sao_Paulo"},
-                    "end": {"dateTime": (data_evento + datetime.timedelta(hours=1)).isoformat(), "timeZone": "America/Sao_Paulo"},
+                    "start": {"date": data_evento.date().isoformat()},
+                    "end": {"date": (data_evento + datetime.timedelta(days=1)).date().isoformat()},
                     "colorId": cor
                 }
                 e = service.events().insert(calendarId=CALENDAR_ID, body=event).execute()
-                eventos_criados[f"P{dia}_Trocas+Swab"] = e.get("htmlLink")
-                procs_restantes -= {"Trocas", "Swab"}
+                eventos_criados[f"P{dia}_Troca+Swab da Mãe"] = e.get("htmlLink")
+                procs_restantes -= {"Troca", "Swab da Mãe"}
 
             for proc in procs_restantes:
                 cor = None if proc == "Coleta" else cores_procedimentos.get(proc, cor_outras)
@@ -212,8 +213,8 @@ def add_event():
                 summary = f"{nome_caixa} P{dia} {proc}"
                 event = {
                     "summary": summary,
-                    "start": {"dateTime": data_evento.isoformat(), "timeZone": "America/Sao_Paulo"},
-                    "end": {"dateTime": (data_evento + datetime.timedelta(hours=1)).isoformat(), "timeZone": "America/Sao_Paulo"}
+                    "start": {"date": data_evento.date().isoformat()},
+                    "end": {"date": (data_evento + datetime.timedelta(days=1)).date().isoformat()}
                 }
 
                 if cor:
@@ -265,6 +266,6 @@ def delete_events():
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+
+    app.run(debug=True, port=5000)
 

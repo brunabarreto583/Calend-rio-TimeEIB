@@ -50,8 +50,7 @@ body.dark-mode .form-container {
 }
 
 .form-header h2 { 
-  font-family:'Press Start 2P', cursive;
-  font-size:32px;
+  font-size: 45px;
   color:#111;
   margin-bottom:10px; 
 }
@@ -496,7 +495,7 @@ body.dark-mode .footer-text {
   }
 
   .form-header h2 {
-    font-size: 18px;
+    font-size: 25px;
   }
 }
 
