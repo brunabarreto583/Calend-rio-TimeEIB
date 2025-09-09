@@ -19,6 +19,13 @@ SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 CONFIG_FILE = os.path.join("json", "event_config.json")
 
+@app.route("/check_login")
+def check_login():
+    service = get_service()
+    if isinstance(service, dict) and service.get("login_required"):
+        return jsonify({"status": "login_required"})
+    return jsonify({"status": "ok"})
+
 @app.route("/criar_evento", methods=["POST"])
 def criar_evento():
     service = get_service()
@@ -81,48 +88,9 @@ def get_service():
     service = build("calendar", "v3", credentials=creds)
     return service
 
-
-def carregar_cores():
-    config = {"default": {"cor_p0": "2", "cor_outras": "4"}, "sobrescritas": {}}
-    if os.path.exists(CONFIG_FILE):
-        try:
-            with open(CONFIG_FILE, "r") as f:
-                loaded = json.load(f)
-                if isinstance(loaded, dict):
-                    config["default"] = loaded.get("default", config["default"])
-                    config["sobrescritas"] = loaded.get("sobrescritas", {})
-        except json.JSONDecodeError:
-            pass
-    return config
-
-
-def salvar_cores(cor_p0, cor_outras):
-    config = {"default": {"cor_p0": cor_p0, "cor_outras": cor_outras}, "sobrescritas": {}}
-    with open(CONFIG_FILE, "w") as f:
-        json.dump(config, f, indent=2)
-
-
-def get_cor_evento(nome_caixa, evento):
-    config = carregar_cores()
-    sobrescritas = config.get("sobrescritas", {}).get(nome_caixa, {})
-
-    if evento in sobrescritas:
-        return sobrescritas[evento]
-
-    if evento == "P0":
-        return config["default"].get("cor_p0", "2")
-    return config["default"].get("cor_outras", "4")
-
-
 @app.route("/")
 def index():
     return render_template("index.html")
-
-@app.route("/get_colors")
-def get_colors():
-    cores = carregar_cores()
-    return jsonify(cores)
-
 
 DIAS_EVENTOS = [3, 6, 7, 10, 15, 18, 21, 25, 28, 30, 35, 42, 49, 56, 60]
 
@@ -131,7 +99,7 @@ def add_event():
     try:
         data = request.json
         nome_caixa = data.get("nome_caixa") 
-        data_p0 = datetime.datetime.strptime(data.get("data_p0"), "%Y-%m-%dT%H:%M")
+        data_p0 = datetime.datetime.strptime(data.get("data_p0"), "%Y-%m-%d")
         cor_p0 = data.get("cor_p0", "2")
         cor_outras = data.get("cor_outras", "4")
         
@@ -172,7 +140,7 @@ def add_event():
             "summary": f"{nome_caixa} P0",
             "start": {"date": data_p0.date().isoformat()},
             "end": {"date": (data_p0 + datetime.timedelta(days=1)).date().isoformat()},
-            "colorId": str(cor_p0)
+            "colorId": "7"
         }
         e_p0 = service.events().insert(calendarId=CALENDAR_ID, body=event_p0).execute()
         eventos_criados = {"P0": e_p0.get("htmlLink")}
