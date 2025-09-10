@@ -17,23 +17,40 @@ toggle.addEventListener("change", () => {
 });
 
 
+let processandoEvento = false;
+
+const mensagensResenha = [
+  "🤭 Calma que o teu nome não é Mariana para estar tão ansiosa.",
+  "⏳ O evento tá mais demorado que fila de banco na segunda-feira, mas já, já sai!",
+  "😂 Fica calmo, o evento tá mais devagar que tartaruga com preguiça. Só mais um tiquinho!",
+  "⚡ Relaxa, o evento está sendo processado. Tá mais enrolado que novela das nove, mas tá indo!",
+  "⚠️ Cuidado, você vai fazer o botão pegar fogo! Aguenta a mão que o evento já tá batendo na porta."
+];
+
+let contadorResenha = 0;
+
 document.getElementById("formEvento").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const nome_caixa = document.getElementById("nome_caixa").value;
-  const data_p0 = document.getElementById("data_p0").value;
-  const loading = document.getElementById("loading");
   const resDiv = document.getElementById("resultado");
+  const loading = document.getElementById("loading");
+
+  if (processandoEvento) {
+    resDiv.innerHTML = `<div class="alert alert-warning">${mensagensResenha[contadorResenha]}</div>`;
+    contadorResenha = (contadorResenha + 1) % mensagensResenha.length;
+    return; 
+  }
+
+  processandoEvento = true;
+  contadorResenha = 0; 
 
   loading.style.display = "flex";
   setTimeout(() => loading.classList.add("show"), 10);
-
   resDiv.innerHTML = "";
 
-  const payload = {
-      nome_caixa,
-      data_p0
-  };
+  const nome_caixa = document.getElementById("nome_caixa").value;
+  const data_p0 = document.getElementById("data_p0").value;
+  const payload = { nome_caixa, data_p0 };
 
   try {
     const resp = await fetch("/add_event", {
@@ -62,9 +79,9 @@ document.getElementById("formEvento").addEventListener("submit", async (e) => {
     resDiv.innerHTML = `<div class="alert alert-danger">❌ Erro inesperado: ${err}</div>`;
   } finally {
     loading.classList.remove("show");
-    setTimeout(() => {
-      loading.style.display = "none";
-    }, 300);
+    setTimeout(() => loading.style.display = "none", 300);
+
+    processandoEvento = false; 
   }
 });
 
@@ -128,4 +145,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (err) {
         console.error("Erro ao verificar login:", err);
     }
+
 });
