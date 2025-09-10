@@ -202,28 +202,57 @@ def add_event():
 
 
 
+import unicodedata
+
+def normalizar(txt):
+    return ''.join(
+        c for c in unicodedata.normalize('NFD', txt.lower())
+        if unicodedata.category(c) != 'Mn'
+    ).strip()
+
 @app.route("/delete_events", methods=["POST"])
 def delete_events():
     try:
         data = request.json
+        print("Data recebida:", data)
         nome_caixa = data.get("nome_caixa")
+        print("Nome da caixa:", nome_caixa)
         if not nome_caixa:
             return jsonify({"status": "error", "message": "Nome da caixa não fornecido."})
 
         service = get_service()
         if isinstance(service, dict) and service.get("login_required"):
             return jsonify({"status": "login_required"})
-        
-        time_min = "2000-01-01T00:00:00Z"  
-        events_result = service.events().list(calendarId=CALENDAR_ID, timeMin=time_min, singleEvents=True).execute()
 
-        events = events_result.get("items", [])
-
+        time_min = "2000-01-01T00:00:00Z"
         deleted_count = 0
-        for event in events:
-            if event.get("summary", "").startswith(nome_caixa):
-                service.events().delete(calendarId=CALENDAR_ID, eventId=event["id"]).execute()
-                deleted_count += 1
+        nome_normalizado = normalizar(nome_caixa)
+
+        page_token = None
+        while True:
+            events_result = service.events().list(
+                calendarId=CALENDAR_ID,
+                timeMin=time_min,
+                singleEvents=True,
+                pageToken=page_token
+            ).execute()
+
+            events = events_result.get("items", [])
+            print(f"Eventos retornados nesta página: {len(events)}")
+
+            for event in events:
+                summary = event.get("summary", "")
+                summary_normalizado = normalizar(summary)
+                print(f"Comparando -> '{summary_normalizado}' com '{nome_normalizado}'")
+
+                if summary_normalizado.startswith(nome_normalizado):
+                    print(f"Excluindo: {summary}")
+                    service.events().delete(calendarId=CALENDAR_ID, eventId=event["id"]).execute()
+                    deleted_count += 1
+
+            page_token = events_result.get("nextPageToken")
+            if not page_token:
+                break
 
         return jsonify({"status": "success", "deleted_count": deleted_count})
 
