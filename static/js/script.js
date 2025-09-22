@@ -22,7 +22,7 @@ let processandoEvento = false;
 const mensagensResenha = [
   "🤭 Calma que o teu nome não é Mariana para estar tão ansiosa.",
   "⏳ O evento tá mais demorado que fila de banco na segunda-feira, mas já, já sai!",
-  "😂 Fica calmo, o evento tá mais devagar que tartaruga com preguiça. Só mais um tiquinho!",
+  "😂 Fica calma, B-R-U-N-A Mariana!",
   "⚡ Relaxa, o evento está sendo processado. Tá mais enrolado que novela das nove, mas tá indo!",
   "⚠️ Cuidado, você vai fazer o botão pegar fogo! Aguenta a mão que o evento já tá batendo na porta."
 ];
