@@ -113,7 +113,7 @@ def add_event():
             6: ["Pesagem", "Coleta"],
             7: ["Troca"],
             10: ["Pesagem"],
-            15: ["Pesagem", "Troca", "Coleta", "Swab da Mãe"],
+            15: ["Pesagem", "Troca", "Coleta"],
             18: ["Pesagem"],
             21: ["Pesagem", "Troca"],
             25: ["Pesagem", "Desmame + Pesagem Mãe"],
@@ -132,8 +132,7 @@ def add_event():
             "Pesagem": "3",
             "Desmame + Pesagem Mãe": "1",        
             "Coleta": "11",        
-            "Troca": "4",        
-            "Swab da Mãe": "4"            
+            "Troca": "4"            
         }
 
         event_p0 = {
@@ -162,8 +161,8 @@ def add_event():
                 eventos_criados[f"P{dia}_Infecção+PesagemMãe"] = e.get("htmlLink")
                 procs_restantes -= {"Infecção", "Pesagem mãe"}
 
-            if "Troca" in procs_restantes and "Swab da Mãe" in procs_restantes:
-                summary = f"{nome_caixa} P{dia} Troca + Swab da Mãe"
+            if "Troca" in procs_restantes:
+                summary = f"{nome_caixa} P{dia} Troca"
                 cor = "4"
                 event = {
                     "summary": summary,
@@ -172,8 +171,8 @@ def add_event():
                     "colorId": cor
                 }
                 e = service.events().insert(calendarId=CALENDAR_ID, body=event).execute()
-                eventos_criados[f"P{dia}_Troca+Swab da Mãe"] = e.get("htmlLink")
-                procs_restantes -= {"Troca", "Swab da Mãe"}
+                eventos_criados[f"P{dia}_Troca"] = e.get("htmlLink")
+                procs_restantes -= {"Troca"}
 
             for proc in procs_restantes:
                 cor = None if proc == "Coleta" else cores_procedimentos.get(proc, cor_outras)
